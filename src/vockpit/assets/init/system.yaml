@@ -1,0 +1,17 @@
+system:
+  id: my-system
+  title: My System
+  summary: Starter system.
+actors:
+  - id: user
+    title: User
+    kind: person
+    summary: Uses the system.
+boxes:
+  - id: core
+    title: Core
+    summary: Main subsystem.
+edges:
+  - from: user
+    to: core
+    data: Uses
