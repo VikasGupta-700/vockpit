@@ -11,4 +11,4 @@
 - [x] Task 9: Scaffold, init and view commands, and pack-draft skill (`src/vockpit/scaffold.py`, `src/vockpit/assets/init/`)
 - [x] Task 10: Shop example and Vockpit self-model generation (`examples/shop`, `model/`, run `vockpit generate`)
 - [x] Task 11: Final documentation, CI workflow, issue template, and method doc (`README.md`, `docs/method.md`, `CHANGELOG.md`, `.github/`)
-- [ ] Phase 3: Architecture and Module documentation (`docs/architecture.md`, `docs/modules.md`)
+- [x] Phase 3: Architecture and Module documentation (`docs/architecture.md`, `docs/modules.md`)
