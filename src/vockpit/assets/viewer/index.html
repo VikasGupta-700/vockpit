@@ -2,11 +2,668 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Vockpit Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vockpit</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #666666;
+      --border: #e0e0e0;
+      --primary: #1976d2;
+      --primary-hover: #1565c0;
+      --highlight: #ff9800;
+      --panel-bg: #ffffff;
+      --header-bg: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --surface: #1e1e1e;
+        --text: #e0e0e0;
+        --text-muted: #9e9e9e;
+        --border: #333333;
+        --primary: #90caf9;
+        --primary-hover: #64b5f6;
+        --highlight: #ffb74d;
+        --panel-bg: #fcfcfc; /* Light panel for SVG in dark mode so D2 colors remain readable */
+        --header-bg: #1e1e1e;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand .tagline {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb .sep {
+      color: var(--text-muted);
+    }
+
+    .breadcrumb .current {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    button#zoom-out-btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button#zoom-out-btn:hover:not(:disabled) {
+      background: var(--border);
+    }
+
+    button#zoom-out-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+      main {
+        flex-direction: column;
+        overflow: visible;
+      }
+    }
+
+    #diagram-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: var(--panel-bg);
+      cursor: grab;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #diagram-viewport:active {
+      cursor: grabbing;
+    }
+
+    #diagram-content {
+      transform-origin: 0 0;
+      user-select: none;
+    }
+
+    #diagram-content svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .missing-notice {
+      padding: 40px;
+      text-align: center;
+      color: #b71c1c;
+      font-size: 1rem;
+      background: #ffebee;
+      border: 1px solid #ffcdd2;
+      border-radius: 8px;
+    }
+
+    #inspector {
+      width: 380px;
+      max-width: 100%;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 24px;
+      overflow-y: auto;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    @media (max-width: 768px) {
+      #inspector {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+    }
+
+    .inspector-header h2 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .inspector-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .inspector-section h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .inspector-section p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .edge-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .edge-list li {
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .edge-list a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .edge-list a:hover {
+      text-decoration: underline;
+    }
+
+    .contains-badge {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    /* Highlight class for focused leaf box */
+    .highlighted-box rect,
+    .highlighted-box polygon,
+    .highlighted-box path {
+      stroke: var(--highlight) !important;
+      stroke-width: 4px !important;
+      filter: drop-shadow(0 0 6px rgba(255, 152, 0, 0.6)) !important;
+    }
+  </style>
   <script src="model.js"></script>
   <script src="diagrams.js"></script>
 </head>
 <body>
-  <div id="app">Vockpit Viewer</div>
+  <header>
+    <div class="top-bar">
+      <div class="brand">
+        <h1>Vockpit</h1>
+        <span class="tagline">You steer. AI builds.</span>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
+      <button id="zoom-out-btn" type="button">Zoom out</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="diagram-viewport">
+      <div id="diagram-content"></div>
+    </div>
+    <aside id="inspector">
+      <div id="inspector-content"></div>
+    </aside>
+  </main>
+
+  <script>
+    (function () {
+      const model = window.VOCKPIT_MODEL;
+      const svgs = window.VOCKPIT_SVG || {};
+
+      const viewport = document.getElementById('diagram-viewport');
+      const content = document.getElementById('diagram-content');
+      const inspector = document.getElementById('inspector-content');
+      const breadcrumb = document.getElementById('breadcrumb');
+      const zoomOutBtn = document.getElementById('zoom-out-btn');
+
+      let currentRoute = '';
+      let scale = 1;
+      let panX = 0;
+      let panY = 0;
+      let isPanning = false;
+      let startMouseX = 0;
+      let startMouseY = 0;
+      let hasDragged = false;
+
+      function updateTransform() {
+        content.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      }
+
+      function resetPanZoom() {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        updateTransform();
+      }
+
+      // Pan & Zoom handlers
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const factor = e.deltaY < 0 ? 1.15 : 0.87;
+        const newScale = Math.min(Math.max(scale * factor, 0.1), 10);
+
+        panX = mouseX - (mouseX - panX) * (newScale / scale);
+        panY = mouseY - (mouseY - panY) * (newScale / scale);
+        scale = newScale;
+        updateTransform();
+      }, { passive: false });
+
+      viewport.addEventListener('mousedown', (e) => {
+        if (e.button === 0) {
+          isPanning = true;
+          hasDragged = false;
+          startMouseX = e.clientX - panX;
+          startMouseY = e.clientY - panY;
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (isPanning) {
+          hasDragged = true;
+          panX = e.clientX - startMouseX;
+          panY = e.clientY - startMouseY;
+          updateTransform();
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        isPanning = false;
+      });
+
+      viewport.addEventListener('dblclick', (e) => {
+        if (!e.target.closest('a')) {
+          resetPanZoom();
+        }
+      });
+
+      // Escape key to zoom out
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          handleZoomOut();
+        }
+      });
+
+      zoomOutBtn.addEventListener('click', handleZoomOut);
+
+      function handleZoomOut() {
+        const route = getRoute();
+        if (!route) return; // empty route, cannot zoom out
+
+        const node = model?.nodes?.[route];
+        if (!node) {
+          window.location.hash = '#/';
+          return;
+        }
+
+        if (node.kind === 'system') {
+          window.location.hash = '#/';
+        } else if (node.kind === 'box') {
+          if (node.level === 2) {
+            window.location.hash = `#/${node.parent}`;
+          } else if (node.level === 1) {
+            window.location.hash = `#/${model.system}`;
+          } else {
+            window.location.hash = '#/';
+          }
+        } else {
+          // Actor or other
+          window.location.hash = '#/';
+        }
+      }
+
+      function getRoute() {
+        const hash = window.location.hash;
+        if (!hash || hash === '#' || hash === '#/') return '';
+        const raw = hash.startsWith('#/') ? hash.slice(2) : hash.slice(1);
+        return decodeURIComponent(raw);
+      }
+
+      function render() {
+        const route = getRoute();
+        currentRoute = route;
+        resetPanZoom();
+
+        if (!model) {
+          inspector.innerHTML = '<p>Error: VOCKPIT_MODEL not loaded.</p>';
+          return;
+        }
+
+        const sysNode = model.nodes[model.system];
+
+        let focusNode = null;
+        let diagramToShow = 'L0_context';
+        let highlightId = null;
+        let isUnknown = false;
+
+        if (!route) {
+          // Empty route
+          focusNode = sysNode;
+          diagramToShow = 'L0_context';
+        } else if (model.nodes[route]) {
+          focusNode = model.nodes[route];
+          if (focusNode.id === model.system) {
+            diagramToShow = 'L1_system';
+          } else if (focusNode.kind === 'box' && focusNode.children && focusNode.children.length > 0) {
+            diagramToShow = `L2_${focusNode.id}`;
+          } else if (focusNode.kind === 'box' && (!focusNode.children || focusNode.children.length === 0)) {
+            diagramToShow = focusNode.diagram;
+            highlightId = focusNode.id;
+          } else {
+            // Actor
+            diagramToShow = 'L0_context';
+          }
+        } else {
+          // Unknown ID
+          isUnknown = true;
+          diagramToShow = 'L0_context';
+        }
+
+        // Render Diagram
+        const svgContent = svgs[diagramToShow];
+        if (svgContent) {
+          content.innerHTML = svgContent;
+
+          // Wire SVG in-page route links and highlight
+          const links = content.querySelectorAll('a');
+          links.forEach((a) => {
+            let href = a.getAttribute('href') || a.getAttribute('xlink:href') || '';
+            // If href uses full fallback URI
+            if (href.startsWith('https://vockpit.invalid/#/')) {
+              href = href.replace('https://vockpit.invalid/#/', '#/');
+              a.setAttribute('href', href);
+            }
+
+            if (highlightId && href.endsWith('#/' + highlightId)) {
+              a.classList.add('highlighted-box');
+            }
+          });
+        } else {
+          content.innerHTML = '<div class="missing-notice">Diagram not rendered. Run "vockpit generate" with d2 installed.</div>';
+        }
+
+        // Render Breadcrumb
+        renderBreadcrumb(route, focusNode, isUnknown);
+
+        // Render Inspector
+        renderInspector(route, focusNode, isUnknown);
+
+        // Update Zoom Out button state
+        zoomOutBtn.disabled = !route;
+      }
+
+      function renderBreadcrumb(route, focusNode, isUnknown) {
+        if (!route) {
+          breadcrumb.innerHTML = '<span class="current">Context</span>';
+          return;
+        }
+
+        const items = [];
+        items.push({ title: 'Context', link: '#/' });
+
+        if (isUnknown) {
+          items.push({ title: `No item '${route}'`, link: null });
+        } else if (focusNode) {
+          const sysNode = model.nodes[model.system];
+
+          if (focusNode.id === sysNode.id) {
+            items.push({ title: sysNode.title, link: null });
+          } else if (focusNode.kind === 'box') {
+            items.push({ title: sysNode.title, link: `#/${sysNode.id}` });
+            if (focusNode.level === 2) {
+              const parentBox = model.nodes[focusNode.parent];
+              if (parentBox) {
+                items.push({ title: parentBox.title, link: `#/${parentBox.id}` });
+              }
+            }
+            items.push({ title: focusNode.title, link: null });
+          } else {
+            // Actor
+            items.push({ title: focusNode.title, link: null });
+          }
+        }
+
+        const html = items.map((it, idx) => {
+          if (idx === items.length - 1 || !it.link) {
+            return `<span class="current">${escapeHtml(it.title)}</span>`;
+          }
+          return `<a href="${it.link}">${escapeHtml(it.title)}</a>`;
+        }).join(' <span class="sep">&gt;</span> ');
+
+        breadcrumb.innerHTML = html;
+      }
+
+      function renderInspector(route, node, isUnknown) {
+        if (isUnknown) {
+          inspector.innerHTML = `<div class="inspector-header"><h2>Item not found</h2><p>No item with id '${escapeHtml(route)}'.</p></div>`;
+          return;
+        }
+
+        if (!node) {
+          inspector.innerHTML = '';
+          return;
+        }
+
+        let meta = `${escapeHtml(node.id)}`;
+        if (node.level !== null && node.level !== undefined) {
+          meta += ` &middot; L${node.level}`;
+        } else if (node.kind) {
+          meta += ` &middot; ${node.kind}`;
+        }
+
+        let html = `
+          <div class="inspector-header">
+            <h2>${escapeHtml(node.title)}</h2>
+            <div class="inspector-meta">${meta}</div>
+          </div>
+        `;
+
+        if (node.summary) {
+          html += `
+            <div class="inspector-section">
+              <p>${escapeHtml(node.summary)}</p>
+            </div>
+          `;
+        }
+
+        if (node.children && node.children.length > 0) {
+          html += `
+            <div class="inspector-section">
+              <span class="contains-badge">Contains ${node.children.length} boxes</span>
+            </div>
+          `;
+        }
+
+        if (node.inputs && node.inputs.length > 0) {
+          html += `
+            <div class="inspector-section">
+              <h3>Inputs</h3>
+              <div class="tag-list">
+                ${node.inputs.map(i => `<span class="tag">${escapeHtml(i)}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        if (node.outputs && node.outputs.length > 0) {
+          html += `
+            <div class="inspector-section">
+              <h3>Outputs</h3>
+              <div class="tag-list">
+                ${node.outputs.map(o => `<span class="tag">${escapeHtml(o)}</span>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // Receives from & Sends to built from edges that touch the focus directly
+        const receives = [];
+        const sends = [];
+
+        (model.edges || []).forEach(e => {
+          if (e.to === node.id) {
+            const sender = model.nodes[e.from];
+            const senderTitle = sender ? sender.title : e.from;
+            receives.push({ id: e.from, title: senderTitle, data: e.data });
+          }
+          if (e.from === node.id) {
+            const receiver = model.nodes[e.to];
+            const receiverTitle = receiver ? receiver.title : e.to;
+            sends.push({ id: e.to, title: receiverTitle, data: e.data });
+          }
+        });
+
+        if (receives.length > 0) {
+          html += `
+            <div class="inspector-section">
+              <h3>Receives from</h3>
+              <ul class="edge-list">
+                ${receives.map(r => `<li><a href="#/${r.id}">${escapeHtml(r.title)}</a>: ${escapeHtml(r.data)}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        }
+
+        if (sends.length > 0) {
+          html += `
+            <div class="inspector-section">
+              <h3>Sends to</h3>
+              <ul class="edge-list">
+                ${sends.map(s => `<li><a href="#/${s.id}">${escapeHtml(s.title)}</a>: ${escapeHtml(s.data)}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        }
+
+        inspector.innerHTML = html;
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      window.addEventListener('hashchange', render);
+      render();
+    })();
+  </script>
 </body>
 </html>

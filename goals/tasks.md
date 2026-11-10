@@ -7,7 +7,7 @@
 - [x] Task 5: D2 text renderer and SVG generation (`src/vockpit/d2.py`, link test with D2 v0.9.0)
 - [x] Task 6: Viewer data generation (`src/vockpit/viewerdata.py`)
 - [x] Task 7: CLI with generate and check; rules C10 and C26 (`src/vockpit/cli.py`, fixtures `broken_c10`, `broken_c26`, e2e tests)
-- [ ] Task 8: Interactive drill-down HTML viewer (`src/vockpit/assets/viewer/index.html`)
+- [x] Task 8: Interactive drill-down HTML viewer (`src/vockpit/assets/viewer/index.html`)
 - [ ] Task 9: Scaffold, init and view commands, and pack-draft skill (`src/vockpit/scaffold.py`, `src/vockpit/assets/init/`)
 - [ ] Task 10: Shop example and Vockpit self-model generation (`examples/shop`, `model/`, run `vockpit generate`)
 - [ ] Task 11: Final documentation, CI workflow, issue template, and method doc (`README.md`, `docs/method.md`, `CHANGELOG.md`, `.github/`)
