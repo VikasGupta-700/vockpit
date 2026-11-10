@@ -1,0 +1,22 @@
+parent: checks
+boxes:
+  - id: check-schema
+    title: Check schema
+    summary: Validates YAML structure, types, and required keys (C01).
+  - id: check-identity
+    title: Check identity
+    summary: Ensures IDs are unique and parents are valid L1 boxes (C02).
+  - id: check-edges
+    title: Check edges
+    summary: Validates that edge endpoints exist and are valid (C03).
+  - id: check-freshness
+    title: Check freshness
+    summary: Verifies that diagrams and viewer data match the model (C10).
+  - id: check-size
+    title: Check size
+    summary: Warns if a diagram exceeds recommended node count (C26).
+edges:
+  - { from: check-schema, to: check-identity, data: Validated model files }
+  - { from: check-identity, to: check-edges, data: Verified item IDs }
+  - { from: check-edges, to: check-freshness, data: Valid model graph }
+  - { from: check-edges, to: check-size, data: Valid diagram nodes }

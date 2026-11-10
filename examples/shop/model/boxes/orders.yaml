@@ -1,0 +1,11 @@
+parent: orders
+boxes:
+  - { id: order-controller, title: Order controller, summary: Receives a checkout request and runs the steps. }
+  - { id: create-order, title: Create order, summary: Validates a cart and turns it into an order. }
+  - { id: order-repository, title: Order repository, summary: Stores and retrieves orders. }
+  - { id: order-status, title: Order status, summary: "Moves an order through new, paid and shipped." }
+edges:
+  - { from: order-controller, to: create-order, data: Order request }
+  - { from: create-order, to: order-repository, data: New order }
+  - { from: order-controller, to: order-status, data: Payment result }
+  - { from: order-status, to: order-repository, data: Status change }

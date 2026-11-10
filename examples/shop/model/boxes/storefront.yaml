@@ -1,0 +1,9 @@
+parent: storefront
+boxes:
+  - { id: catalog-view, title: Catalogue view, summary: Lists goods and shows one item in detail. }
+  - { id: cart-view, title: Cart view, summary: Shows the cart and starts checkout. }
+  - { id: cart-store, title: Cart store, summary: Keeps each customer's cart between visits. }
+edges:
+  - { from: catalog-view, to: cart-store, data: Item to add }
+  - { from: cart-store, to: cart-view, data: Cart contents }
+  - { from: cart-view, to: order-controller, data: Cart }

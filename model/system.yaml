@@ -1,0 +1,79 @@
+system:
+  id: vockpit
+  title: Vockpit
+  summary: Turns a description of a system into a diagram that can be drilled into.
+actors:
+  - id: developer
+    title: Developer
+    kind: person
+    summary: Describes the system and reviews the diagrams.
+  - id: ai-agent
+    title: AI Agent
+    kind: person
+    summary: Drafts the model from a brief.
+  - id: d2-tool
+    title: D2 Tool
+    kind: external
+    summary: Renders D2 text to SVG.
+  - id: browser
+    title: Browser
+    kind: external
+    summary: Displays the viewer.
+boxes:
+  - id: cli
+    title: CLI
+    summary: Parses commands and sets the exit code.
+    inputs: [Command]
+    outputs: [Exit code]
+  - id: registry
+    title: Registry
+    summary: Loads the model files.
+    inputs: [Model files]
+    outputs: [Model object]
+  - id: checks
+    title: Checks
+    summary: Applies the rules.
+    inputs: [Model object]
+    outputs: [Findings]
+  - id: diagrams
+    title: Diagrams
+    summary: Decides which nodes and edges each diagram shows.
+    inputs: [Model object]
+    outputs: [Diagrams]
+  - id: d2-output
+    title: D2 output
+    summary: Writes D2 text and calls the D2 tool.
+    inputs: [Diagrams]
+    outputs: [D2 files, SVG files]
+  - id: viewer-data
+    title: Viewer data
+    summary: Writes the files the viewer loads.
+    inputs: [Model object, Diagrams, SVG files]
+    outputs: [model.js, diagrams.js]
+  - id: viewer
+    title: Viewer
+    summary: The page that shows the diagrams.
+    inputs: [model.js, diagrams.js]
+  - id: scaffold
+    title: Scaffold
+    summary: Creates a starter project.
+    outputs: [Starter project]
+edges:
+  - { from: developer, to: cli, data: User commands }
+  - { from: ai-agent, to: registry, data: Model files }
+  - { from: cli, to: scaffold, data: Init command }
+  - { from: cli, to: checks, data: Check command }
+  - { from: cli, to: diagrams, data: Generate command }
+  - { from: cli, to: viewer, data: View command }
+  - { from: scaffold, to: registry, data: Starter model }
+  - { from: registry, to: checks, data: Model data }
+  - { from: checks, to: cli, data: Findings }
+  - { from: registry, to: diagrams, data: Model items }
+  - { from: diagrams, to: d2-output, data: Diagram objects }
+  - { from: d2-output, to: d2-tool, data: D2 script }
+  - { from: d2-tool, to: d2-output, data: SVG output }
+  - { from: diagrams, to: viewer-data, data: Diagram specs }
+  - { from: d2-output, to: viewer-data, data: SVG data }
+  - { from: viewer-data, to: viewer, data: model.js and diagrams.js }
+  - { from: viewer, to: browser, data: Static HTML and assets }
+  - { from: viewer, to: developer, data: Rendered diagrams and inspection }
