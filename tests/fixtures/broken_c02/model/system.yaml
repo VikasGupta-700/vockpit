@@ -1,0 +1,13 @@
+system:
+  id: shop
+  title: Online Shop
+  summary: Lets customers browse goods, order them and pay online.
+actors:
+  - { id: customer, title: Customer, kind: person }
+boxes:
+  - id: orders
+    title: Orders
+    summary: Takes and tracks orders.
+  - id: create-order
+    title: Create order
+    summary: Conflicting L1 box with L2 box below.

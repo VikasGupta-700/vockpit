@@ -1,0 +1,10 @@
+system:
+  id: shop
+  title: Online Shop
+  summary: Lets customers browse goods, order them and pay online.
+actors:
+  - { id: customer, title: Customer, kind: invalid-kind, summary: Browses and buys goods. }
+boxes:
+  - id: storefront
+    title: Storefront
+    summary: Shows the catalogue and the cart.

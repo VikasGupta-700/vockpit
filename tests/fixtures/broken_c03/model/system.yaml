@@ -1,0 +1,13 @@
+system:
+  id: shop
+  title: Online Shop
+  summary: Lets customers browse goods, order them and pay online.
+actors:
+  - { id: customer, title: Customer, kind: person }
+  - { id: payment-provider, title: Payment Provider, kind: external }
+boxes:
+  - id: storefront
+    title: Storefront
+    summary: Shows the catalogue and the cart.
+edges:
+  - { from: customer, to: payment-provider, data: Direct actor link }

@@ -1,0 +1,5 @@
+parent: orders
+boxes:
+  - id: create-order
+    title: Create order
+    summary: Validates a cart and turns it into an order.
