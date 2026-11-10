@@ -1,0 +1,18 @@
+system:
+  id: big-system
+  title: Big System
+  summary: A system with 13 boxes.
+boxes:
+  - { id: box-01, title: Box 1, summary: Description. }
+  - { id: box-02, title: Box 2, summary: Description. }
+  - { id: box-03, title: Box 3, summary: Description. }
+  - { id: box-04, title: Box 4, summary: Description. }
+  - { id: box-05, title: Box 5, summary: Description. }
+  - { id: box-06, title: Box 6, summary: Description. }
+  - { id: box-07, title: Box 7, summary: Description. }
+  - { id: box-08, title: Box 8, summary: Description. }
+  - { id: box-09, title: Box 9, summary: Description. }
+  - { id: box-10, title: Box 10, summary: Description. }
+  - { id: box-11, title: Box 11, summary: Description. }
+  - { id: box-12, title: Box 12, summary: Description. }
+  - { id: box-13, title: Box 13, summary: Description. }

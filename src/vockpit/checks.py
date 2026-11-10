@@ -5,8 +5,9 @@ from typing import Sequence
 import yaml
 
 from vockpit.findings import Finding
-from vockpit import registry
+from vockpit import registry, diagrams, d2, viewerdata
 from vockpit.registry import Model
+from vockpit.diagrams import Diagram
 
 
 def check_c01(root: Path | str) -> list[Finding]:
@@ -119,6 +120,74 @@ def check_c03(model: Model) -> list[Finding]:
     return findings
 
 
+def check_c10(root: Path | str, model: Model, diag_list: list[Diagram]) -> list[Finding]:
+    findings: list[Finding] = []
+    root = Path(root).resolve()
+    diagrams_dir = root / "docs" / "diagrams"
+    viewer_dir = root / "docs" / "viewer"
+
+    expected_d2_names = {f"{d.name}.d2" for d in diag_list}
+
+    # Check for unexpected .d2 files
+    if diagrams_dir.is_dir():
+        for f in sorted(diagrams_dir.glob("*.d2"), key=lambda p: p.name):
+            if f.name not in expected_d2_names:
+                findings.append(Finding("C10", "ERROR", f"docs/diagrams/{f.name}", "unexpected diagram file"))
+
+    # Check each expected .d2 file and its corresponding .svg
+    for d in diag_list:
+        d2_file = diagrams_dir / f"{d.name}.d2"
+        rel_d2 = f"docs/diagrams/{d.name}.d2"
+        if not d2_file.is_file():
+            findings.append(Finding("C10", "ERROR", rel_d2, "file is missing"))
+        else:
+            expected_text = d2.render(d).replace("\r\n", "\n")
+            actual_text = d2_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+            if actual_text != expected_text:
+                findings.append(Finding("C10", "ERROR", rel_d2, "content differs from model"))
+
+            # Check svg warning
+            svg_file = diagrams_dir / f"{d.name}.svg"
+            rel_svg = f"docs/diagrams/{d.name}.svg"
+            if not svg_file.is_file():
+                findings.append(Finding("C10", "WARN", rel_svg, "missing .svg file beside .d2"))
+
+    # Check docs/viewer/model.js
+    model_js = viewer_dir / "model.js"
+    rel_model_js = "docs/viewer/model.js"
+    if not model_js.is_file():
+        findings.append(Finding("C10", "ERROR", rel_model_js, "file is missing"))
+    else:
+        expected_model_js = viewerdata.build_model_js(model, diag_list).replace("\r\n", "\n")
+        actual_model_js = model_js.read_text(encoding="utf-8").replace("\r\n", "\n")
+        if actual_model_js != expected_model_js:
+            findings.append(Finding("C10", "ERROR", rel_model_js, "content differs from model"))
+
+    # Check docs/viewer/diagrams.js (WARN)
+    diagrams_js = viewer_dir / "diagrams.js"
+    rel_diagrams_js = "docs/viewer/diagrams.js"
+    if not diagrams_js.is_file():
+        findings.append(Finding("C10", "WARN", rel_diagrams_js, "file is missing"))
+
+    return findings
+
+
+def check_c26(diag_list: list[Diagram]) -> list[Finding]:
+    findings: list[Finding] = []
+    for d in diag_list:
+        count = len(d.nodes)
+        if count > 12:
+            findings.append(
+                Finding(
+                    "C26",
+                    "WARN",
+                    f"docs/diagrams/{d.name}.d2",
+                    f"diagram '{d.name}' has {count} nodes (maximum recommended is 12)",
+                )
+            )
+    return findings
+
+
 def run_model_checks(root: Path | str) -> list[Finding]:
     root = Path(root).resolve()
     # Step 1: C01
@@ -133,4 +202,13 @@ def run_model_checks(root: Path | str) -> list[Finding]:
     # Step 2: C02 & C03
     c02_findings = check_c02(root, model)
     c03_findings = check_c03(model)
-    return c02_findings + c03_findings
+    early_errors = [f for f in c02_findings + c03_findings if f.severity == "ERROR"]
+    if early_errors:
+        return c02_findings + c03_findings
+
+    # Step 3: C10 & C26
+    diag_list = diagrams.build(model)
+    c10_findings = check_c10(root, model, diag_list)
+    c26_findings = check_c26(diag_list)
+    return c02_findings + c03_findings + c10_findings + c26_findings
+

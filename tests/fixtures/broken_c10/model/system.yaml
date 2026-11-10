@@ -1,0 +1,36 @@
+system:
+  id: shop
+  title: Online Shop
+  summary: Lets customers browse goods, order them and pay online.
+actors:
+  - { id: customer, title: Customer, kind: person, summary: Browses and buys goods. }
+  - { id: payment-provider, title: Payment Provider, kind: external, summary: Takes card payments. }
+  - { id: warehouse, title: Warehouse System, kind: external, summary: Picks and ships orders. }
+boxes:
+  - id: storefront
+    title: Storefront
+    summary: Shows the catalogue and the cart.
+    outputs: [Cart]
+  - id: orders
+    title: Orders
+    summary: Takes orders and tracks them to delivery.
+    inputs: [Cart]
+    outputs: [Order]
+  - id: payments
+    title: Payments
+    summary: Charges the customer for an order.
+    inputs: [Order]
+    outputs: [Payment result]
+  - id: notifications
+    title: Notifications
+    summary: Tells customers and the warehouse what happened.
+    inputs: [Order event]
+edges:
+  - { from: customer, to: storefront, data: Browse and add to cart }
+  - { from: storefront, to: orders, data: Cart }
+  - { from: orders, to: payments, data: Payment request }
+  - { from: payments, to: payment-provider, data: Card charge }
+  - { from: payments, to: orders, data: Payment result }
+  - { from: orders, to: notifications, data: Order event }
+  - { from: notifications, to: customer, data: Order confirmation }
+  - { from: notifications, to: warehouse, data: Shipping request }
