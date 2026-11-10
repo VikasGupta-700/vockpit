@@ -1,7 +1,7 @@
 # Vockpit Tasks
 
 - [x] Task 1: Repository initialisation (`git init`, `.gitignore`, `.gitattributes`, `pyproject.toml`, `LICENSE`, empty package `vockpit`, virtual environment `.venv`, `pip install -e ".[dev]"`)
-- [ ] Task 2: Core findings and registry (`src/vockpit/findings.py`, `src/vockpit/registry.py`, fixture `tests/fixtures/good/`)
+- [x] Task 2: Core findings and registry (`src/vockpit/findings.py`, `src/vockpit/registry.py`, fixture `tests/fixtures/good/`)
 - [ ] Task 3: Checks C01, C02, C03 (`src/vockpit/checks.py`, fixtures `broken_c01`, `broken_c02`, `broken_c03`)
 - [ ] Task 4: Diagram model generator (`src/vockpit/diagrams.py`)
 - [ ] Task 5: D2 text renderer and SVG generation (`src/vockpit/d2.py`, link test with D2 v0.9.0)
