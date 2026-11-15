@@ -1,0 +1,201 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+tone_instructions: >
+  Be thorough, specific, and actionable. Explain the *why* behind every
+  suggestion. Prefer concrete code examples over abstract advice. Flag
+  security issues with high severity. When reviewing the viewer HTML,
+  think like a frontend security auditor. When reviewing Python, think
+  like a senior Pythonista who cares about correctness over cleverness.
+early_access: true
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  auto_title_placeholder: "@coderabbitai"
+  review_status: true
+  commit_status: true
+  poem: false
+  collapse_walkthrough: false
+  sequence_diagrams: true
+  changed_files_summary: true
+
+  labeler:
+    enabled: true
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "SKIP REVIEW"
+    drafts: false
+    base_branches:
+      - "main"
+
+  tools:
+    ast-grep:
+      enabled: true
+      packages:
+        - python
+    semgrep:
+      enabled: true
+      config:
+        - "p/python"
+        - "p/security"
+        - "p/secrets"
+        - "p/owasp-top-ten"
+        - "p/command-injection"
+        - "p/insecure-use-of-subprocess"
+    ruff:
+      enabled: true
+    mypy:
+      enabled: true
+    pylint:
+      enabled: true
+
+  path_filters:
+    - "!**/__pycache__/**"
+    - "!**/*.pyc"
+    - "!**/.venv/**"
+    - "!**/.git/**"
+    - "!docs/viewer/model.js"
+    - "!docs/viewer/diagrams.js"
+    - "!docs/viewer/code.js"
+    - "!tests/fixtures/**/docs/**"
+    - "!walkthrough/**"
+
+  path_instructions:
+    - path: "src/vockpit/**/*.py"
+      instructions: |
+        Apply all of the following rules:
+
+        LANGUAGE & COMPATIBILITY
+        - Python 3.10+ only. Use `match` statements where they clarify intent,
+          `X | Y` union types in annotations, and structural pattern matching.
+        - All type annotations must be present on public functions and methods.
+
+        DEPENDENCIES
+        - Runtime deps: PyYAML only. Flag any new third-party import that is not
+          PyYAML as a blocker — it violates the project's hard constraint.
+        - Dev deps: pytest only.
+
+        FILE I/O
+        - Use pathlib.Path for every file operation. No os.path, no string concatenation
+          of paths, no hardcoded backslashes.
+        - All file writes must use encoding="utf-8" and newline="\n" (LF only).
+
+        SECURITY
+        - Any code that constructs a filesystem path from user-supplied data MUST
+          call abs_path.relative_to(root_resolved) and catch ValueError. Flag any
+          missing path-traversal guard as a critical security issue.
+        - Never pass unsanitized user input to subprocess calls.
+
+        DATA STRUCTURES
+        - Dataclass mutable defaults must use field(default_factory=...).
+        - Do not use mutable default arguments in function signatures.
+
+        ERROR HANDLING
+        - Functions that can fail on missing files should return a typed result or
+          raise a specific exception — not silently return None.
+        - CLI commands must return int exit codes: 0=success, 1=error, 2=bad usage.
+          No bare sys.exit() calls outside cli.py.
+
+    - path: "src/vockpit/cli.py"
+      instructions: |
+        - Every subcommand handler must return int (0, 1, or 2). Never call
+          sys.exit() directly from a handler.
+        - Argument parser help strings must be present on every add_argument call.
+        - New commands must follow the existing pattern: add_parser → cmd_* function.
+
+    - path: "src/vockpit/registry.py"
+      instructions: |
+        - validate_c01 and _validate_boxes must reject any key not in the
+          explicit allowed_keys set — no silent passthrough of unknown fields.
+        - ID pattern ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ must be enforced on every id
+          field (system, actor, box).
+        - load() must return (None, findings) on any validation error, never raise.
+
+    - path: "src/vockpit/checks.py"
+      instructions: |
+        - Each check function must return list[Finding], never raise.
+        - Check codes (C01, C02 …) must not overlap. Flag duplicate codes.
+        - Findings must have severity "ERROR" or "WARN" only.
+
+    - path: "src/vockpit/viewerdata.py"
+      instructions: |
+        - build_code_js must have a path-traversal guard on every code path that
+          resolves a user-supplied relative path.
+        - All file content embedded in JS globals must be valid JSON (json.dumps,
+          not string interpolation).
+        - newline="\n" must be passed to every write_text call.
+
+    - path: "src/vockpit/assets/viewer/index.html"
+      instructions: |
+        SECURITY
+        - Every piece of user-visible or model-supplied text MUST pass through
+          escapeHtml() before being written to innerHTML. Flag any direct
+          innerHTML assignment that uses unescaped data as XSS.
+        - onclick attributes that embed node IDs must use escapeHtml() on the ID.
+
+        FUNCTIONALITY
+        - All DOM lookups for modal elements must be lazy (inside functions), not
+          at script parse time. The modal HTML appears after the script tag.
+        - localStorage reads/writes must be wrapped in try/catch.
+        - Escape key handler must close the topmost open modal first (priority
+          order: changes modal > code modal > zoom out).
+        - Pan/zoom wheel and mousedown handlers must be no-ops when
+          code-view-mode class is present on the viewport.
+
+        CONSTRAINTS
+        - No external CDN links, no network requests of any kind. All CSS and JS
+          must be inline.
+        - No <script src="..."> except for model.js, diagrams.js, and code.js
+          which are loaded from the same directory.
+
+    - path: "tests/**/*.py"
+      instructions: |
+        - Each test file must import only from vockpit and pytest — no additional
+          test helpers or mocking libraries.
+        - Fixture files under tests/fixtures/ must be regenerated whenever the
+          corresponding source module changes its output format.
+        - Test function names: test_<function_under_test>_<scenario>.
+        - Parametrize repeated patterns instead of copy-paste test functions.
+        - Integration tests that call cmd_generate must pass --no-svg to avoid
+          requiring d2 on the test runner.
+
+    - path: "model/**/*.yaml"
+      instructions: |
+        - IDs must match ^[a-z][a-z0-9]*(-[a-z0-9]+)*$.
+        - code: paths must be relative to project root (no leading /) and should
+          point to files that actually exist in the repo.
+        - Edge from/to values must reference IDs defined elsewhere in the model.
+        - No keys outside the allowed set: system, actors, boxes, edges (top-level);
+          id, title, summary, inputs, outputs, code (box); id, title, kind, summary (actor).
+
+    - path: "src/vockpit/analyze.py"
+      instructions: |
+        This module will be added to implement `vockpit analyze <path>`.
+        When reviewing:
+        - AST parsing must use ast.parse() with type_comments=True.
+        - Only stdlib + PyYAML allowed (no third-party AST walkers).
+        - Output YAML must be valid Vockpit model YAML (validate with registry.validate_c01).
+        - Import graph edges must only connect nodes that exist in the generated model.
+        - Report output must be valid Markdown.
+        - Path handling: same pathlib + traversal-guard rules as viewerdata.py.
+        - Functions must handle SyntaxError from ast.parse gracefully (skip file,
+          record warning) rather than crashing.
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: "auto"
+  issues:
+    scope: "auto"
+  pull_requests:
+    scope: "auto"
