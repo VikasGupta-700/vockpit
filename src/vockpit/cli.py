@@ -44,6 +44,13 @@ def main(argv: list[str] | None = None) -> int:
         "--no-open", action="store_true", help="Print address without opening browser"
     )
 
+    # analyze
+    p_an = subparsers.add_parser(
+        "analyze", help="Scan a Python codebase and write a Vockpit model plus a structure report"
+    )
+    p_an.add_argument("path", nargs="?", default=".", help="Python project folder to analyze")
+    p_an.add_argument("--force", action="store_true", help="Overwrite an existing model")
+
     args = parser.parse_args(argv)
 
     if not args.command:
@@ -54,6 +61,11 @@ def main(argv: list[str] | None = None) -> int:
         from vockpit import scaffold
 
         return scaffold.init_project(Path(args.path))
+
+    elif args.command == "analyze":
+        from vockpit import analyze
+
+        return analyze.run(Path(args.path), force=args.force)
 
     elif args.command == "generate":
         return cmd_generate(Path(args.root), no_svg=args.no_svg)
