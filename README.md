@@ -59,6 +59,23 @@ vockpit view
 
 ---
 
+## Analyze an Existing Python Codebase
+
+Instead of writing the model by hand, scan a Python project:
+
+```bash
+vockpit analyze path/to/project
+vockpit generate --root path/to/project
+vockpit view --root path/to/project
+```
+
+`analyze` writes `model/system.yaml` (plus `model/boxes/*.yaml`) from the package and import
+structure, and `docs/analysis.md` with a structure report: module sizes, dependencies,
+circular imports, most-imported modules, and external packages. It refuses to overwrite an
+existing model unless you pass `--force`. Python only for now.
+
+---
+
 ## Live Demo
 
 Explore the sample online shop demo in [`examples/shop/docs/viewer/index.html`](examples/shop/docs/viewer/index.html).
