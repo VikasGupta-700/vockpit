@@ -117,7 +117,7 @@ def cmd_generate(root: Path, no_svg: bool = False) -> int:
     # Step 4: Write docs/viewer/model.js, diagrams.js, and index.html
     viewer_dir = root / "docs" / "viewer"
     viewer_dir.mkdir(parents=True, exist_ok=True)
-    viewerdata.write_viewer_data(viewer_dir, model, diag_list, svg_map)
+    viewerdata.write_viewer_data(viewer_dir, model, diag_list, svg_map, root=root)
 
     index_asset = Path(__file__).parent / "assets" / "viewer" / "index.html"
     if index_asset.is_file():

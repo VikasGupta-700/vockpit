@@ -25,39 +25,47 @@ boxes:
     summary: Parses commands and sets the exit code.
     inputs: [Command]
     outputs: [Exit code]
+    code: [src/vockpit/cli.py]
   - id: registry
     title: Registry
     summary: Loads the model files.
     inputs: [Model files]
     outputs: [Model object]
+    code: [src/vockpit/registry.py]
   - id: checks
     title: Checks
     summary: Applies the rules.
     inputs: [Model object]
     outputs: [Findings]
+    code: [src/vockpit/checks.py]
   - id: diagrams
     title: Diagrams
     summary: Decides which nodes and edges each diagram shows.
     inputs: [Model object]
     outputs: [Diagrams]
+    code: [src/vockpit/diagrams.py]
   - id: d2-output
     title: D2 output
     summary: Writes D2 text and calls the D2 tool.
     inputs: [Diagrams]
     outputs: [D2 files, SVG files]
+    code: [src/vockpit/d2.py]
   - id: viewer-data
     title: Viewer data
     summary: Writes the files the viewer loads.
     inputs: [Model object, Diagrams, SVG files]
     outputs: [model.js, diagrams.js]
+    code: [src/vockpit/viewerdata.py]
   - id: viewer
     title: Viewer
     summary: The page that shows the diagrams.
     inputs: [model.js, diagrams.js]
+    code: [src/vockpit/assets/viewer/index.html]
   - id: scaffold
     title: Scaffold
     summary: Creates a starter project.
     outputs: [Starter project]
+    code: [src/vockpit/scaffold.py]
 edges:
   - { from: developer, to: cli, data: User commands }
   - { from: ai-agent, to: registry, data: Model files }

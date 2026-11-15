@@ -38,6 +38,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-01": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-01",
       "inputs": [],
@@ -50,6 +51,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-02": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-02",
       "inputs": [],
@@ -62,6 +64,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-03": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-03",
       "inputs": [],
@@ -74,6 +77,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-04": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-04",
       "inputs": [],
@@ -86,6 +90,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-05": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-05",
       "inputs": [],
@@ -98,6 +103,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-06": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-06",
       "inputs": [],
@@ -110,6 +116,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-07": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-07",
       "inputs": [],
@@ -122,6 +129,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-08": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-08",
       "inputs": [],
@@ -134,6 +142,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-09": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-09",
       "inputs": [],
@@ -146,6 +155,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-10": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-10",
       "inputs": [],
@@ -158,6 +168,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-11": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-11",
       "inputs": [],
@@ -170,6 +181,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-12": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-12",
       "inputs": [],
@@ -182,6 +194,7 @@ window.VOCKPIT_MODEL = {
     },
     "box-13": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "box-13",
       "inputs": [],

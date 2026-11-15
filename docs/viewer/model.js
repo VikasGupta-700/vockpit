@@ -150,6 +150,7 @@ window.VOCKPIT_MODEL = {
     },
     "check-edges": {
       "children": [],
+      "code": [],
       "diagram": "L2_checks",
       "id": "check-edges",
       "inputs": [],
@@ -162,6 +163,7 @@ window.VOCKPIT_MODEL = {
     },
     "check-freshness": {
       "children": [],
+      "code": [],
       "diagram": "L2_checks",
       "id": "check-freshness",
       "inputs": [],
@@ -174,6 +176,7 @@ window.VOCKPIT_MODEL = {
     },
     "check-identity": {
       "children": [],
+      "code": [],
       "diagram": "L2_checks",
       "id": "check-identity",
       "inputs": [],
@@ -186,6 +189,7 @@ window.VOCKPIT_MODEL = {
     },
     "check-schema": {
       "children": [],
+      "code": [],
       "diagram": "L2_checks",
       "id": "check-schema",
       "inputs": [],
@@ -198,6 +202,7 @@ window.VOCKPIT_MODEL = {
     },
     "check-size": {
       "children": [],
+      "code": [],
       "diagram": "L2_checks",
       "id": "check-size",
       "inputs": [],
@@ -216,6 +221,9 @@ window.VOCKPIT_MODEL = {
         "check-freshness",
         "check-size"
       ],
+      "code": [
+        "src/vockpit/checks.py"
+      ],
       "diagram": "L2_checks",
       "id": "checks",
       "inputs": [
@@ -232,6 +240,9 @@ window.VOCKPIT_MODEL = {
     },
     "cli": {
       "children": [],
+      "code": [
+        "src/vockpit/cli.py"
+      ],
       "diagram": "L1_system",
       "id": "cli",
       "inputs": [
@@ -248,6 +259,9 @@ window.VOCKPIT_MODEL = {
     },
     "d2-output": {
       "children": [],
+      "code": [
+        "src/vockpit/d2.py"
+      ],
       "diagram": "L1_system",
       "id": "d2-output",
       "inputs": [
@@ -289,6 +303,9 @@ window.VOCKPIT_MODEL = {
     },
     "diagrams": {
       "children": [],
+      "code": [
+        "src/vockpit/diagrams.py"
+      ],
       "diagram": "L1_system",
       "id": "diagrams",
       "inputs": [
@@ -305,6 +322,9 @@ window.VOCKPIT_MODEL = {
     },
     "registry": {
       "children": [],
+      "code": [
+        "src/vockpit/registry.py"
+      ],
       "diagram": "L1_system",
       "id": "registry",
       "inputs": [
@@ -321,6 +341,9 @@ window.VOCKPIT_MODEL = {
     },
     "scaffold": {
       "children": [],
+      "code": [
+        "src/vockpit/scaffold.py"
+      ],
       "diagram": "L1_system",
       "id": "scaffold",
       "inputs": [],
@@ -335,6 +358,9 @@ window.VOCKPIT_MODEL = {
     },
     "viewer": {
       "children": [],
+      "code": [
+        "src/vockpit/assets/viewer/index.html"
+      ],
       "diagram": "L1_system",
       "id": "viewer",
       "inputs": [
@@ -350,6 +376,9 @@ window.VOCKPIT_MODEL = {
     },
     "viewer-data": {
       "children": [],
+      "code": [
+        "src/vockpit/viewerdata.py"
+      ],
       "diagram": "L1_system",
       "id": "viewer-data",
       "inputs": [

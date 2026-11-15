@@ -1,0 +1,1 @@
+window.VOCKPIT_CODE = {};

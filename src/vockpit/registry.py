@@ -37,6 +37,7 @@ class Box:
     level: int = 1
     children: list[str] = field(default_factory=list)
     source: str = ""
+    code: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -212,7 +213,7 @@ def validate_c01(root: Path) -> list[Finding]:
 
 
 def _validate_boxes(boxes: list[Any], loc: str, findings: list[Finding]) -> None:
-    allowed_keys = {"id", "title", "summary", "inputs", "outputs"}
+    allowed_keys = {"id", "title", "summary", "inputs", "outputs", "code"}
     for idx, b in enumerate(boxes):
         if not isinstance(b, dict):
             findings.append(Finding("C01", "ERROR", loc, f"boxes[{idx}] must be a mapping"))
@@ -227,7 +228,7 @@ def _validate_boxes(boxes: list[Any], loc: str, findings: list[Finding]) -> None
             elif req == "id" and not ID_PATTERN.match(b[req]):
                 findings.append(Finding("C01", "ERROR", loc, f"invalid box id '{b[req]}'"))
 
-        for list_key in ["inputs", "outputs"]:
+        for list_key in ["inputs", "outputs", "code"]:
             if list_key in b:
                 val = b[list_key]
                 if not isinstance(val, list) or not all(isinstance(x, str) for x in val):
@@ -290,6 +291,7 @@ def load(root: Path | str) -> tuple[Model | None, list[Finding]]:
             level=1,
             children=[],
             source="model/system.yaml",
+            code=list(b.get("code") or []),
         )
         boxes.append(box)
         l1_boxes.append(box)
@@ -325,6 +327,7 @@ def load(root: Path | str) -> tuple[Model | None, list[Finding]]:
                     level=2,
                     children=[],
                     source=rel_path,
+                    code=list(b.get("code") or []),
                 )
                 boxes.append(child_box)
                 # Register as child of parent L1 box if found
