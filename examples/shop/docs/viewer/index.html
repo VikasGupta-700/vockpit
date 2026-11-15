@@ -288,9 +288,246 @@
       stroke-width: 4px !important;
       filter: drop-shadow(0 0 6px rgba(255, 152, 0, 0.6)) !important;
     }
+
+    /* ── Code modal ── */
+    #code-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+    }
+    #code-modal.open { display: flex; }
+    #code-modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: min(90vw, 860px);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #code-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #code-modal-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    #code-modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      padding: 0 4px;
+      line-height: 1;
+    }
+    #code-modal-close:hover { color: var(--text); }
+    #code-modal-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px 16px 0;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+    .code-tab {
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      background: var(--bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .code-tab.active { background: var(--surface); color: var(--text); }
+    #code-modal-body { flex: 1; overflow: auto; padding: 0; }
+    #code-modal-body pre {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Cascadia Code','Fira Code','Consolas',monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+      tab-size: 4;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .code-line-num {
+      display: inline-block;
+      min-width: 3ch;
+      margin-right: 12px;
+      color: var(--text-muted);
+      text-align: right;
+      user-select: none;
+    }
+    .code-error-notice {
+      padding: 24px 16px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .inspector-code-btn {
+      display: inline-block;
+      margin-top: 2px;
+      padding: 3px 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .inspector-code-btn:hover { background: var(--primary-hover); }
+    .code-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Inline code view ── */
+    #diagram-viewport.code-view-mode {
+      overflow: auto;
+      cursor: default;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .code-inline-viewer {
+      min-width: 100%;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+    .code-inline-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px 16px 0;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow-x: auto;
+      background: var(--bg);
+    }
+    .code-inline-body { flex: 1; }
+    .code-inline-body pre {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Cascadia Code','Fira Code','Consolas',monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+      tab-size: 4;
+      white-space: pre;
+    }
+
+    /* ── Prompt textarea ── */
+    .inspector-prompt-section { margin-top: 4px; }
+    .prompt-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .prompt-textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+    /* ── Process All Changes button ── */
+    #process-all-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #process-all-btn:hover { background: var(--primary-hover); }
+
+    /* ── Changes modal ── */
+    #changes-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+    }
+    #changes-modal.open { display: flex; }
+    #changes-modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: min(90vw, 860px);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #changes-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #changes-modal-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    #changes-modal-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.3rem; color: var(--text-muted); padding: 0 4px; line-height: 1;
+    }
+    #changes-modal-close:hover { color: var(--text); }
+    #changes-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #copy-changes-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    #copy-changes-btn:hover { background: var(--primary-hover); }
+    #copy-confirm { font-size: 0.85rem; color: #2e7d32; }
+    #changes-modal-hint { margin-left: auto; font-size: 0.8rem; color: var(--text-muted); }
+    #changes-modal-body { flex: 1; overflow: auto; padding: 0; }
+    #changes-modal-body pre {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Cascadia Code','Fira Code','Consolas',monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   </style>
   <script src="model.js"></script>
   <script src="diagrams.js"></script>
+  <script src="code.js"></script>
 </head>
 <body>
   <header>
@@ -302,7 +539,10 @@
     </div>
     <div class="nav-bar">
       <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
-      <button id="zoom-out-btn" type="button">Zoom out</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+        <button id="process-all-btn" type="button">Process All Changes</button>
+        <button id="zoom-out-btn" type="button">Zoom out</button>
+      </div>
     </div>
   </header>
 
@@ -348,6 +588,7 @@
 
       // Pan & Zoom handlers
       viewport.addEventListener('wheel', (e) => {
+        if (viewport.classList.contains('code-view-mode')) return;
         e.preventDefault();
         const rect = viewport.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -363,6 +604,7 @@
       }, { passive: false });
 
       viewport.addEventListener('mousedown', (e) => {
+        if (viewport.classList.contains('code-view-mode')) return;
         if (e.button === 0) {
           isPanning = true;
           hasDragged = false;
@@ -390,11 +632,14 @@
         }
       });
 
-      // Escape key to zoom out
+      // Escape key: close modals first (priority: changes modal > code modal), then zoom out
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' || e.key === 'Esc') {
-          handleZoomOut();
-        }
+        if (e.key !== 'Escape' && e.key !== 'Esc') return;
+        const cm = document.getElementById('changes-modal');
+        if (cm && cm.classList.contains('open')) { closeChangesModal(); return; }
+        const m = document.getElementById('code-modal');
+        if (m && m.classList.contains('open')) { closeCodeModal(); return; }
+        handleZoomOut();
       });
 
       zoomOutBtn.addEventListener('click', handleZoomOut);
@@ -473,9 +718,20 @@
         }
 
         // Render Diagram
+        viewport.classList.remove('code-view-mode');
         const svgContent = svgs[diagramToShow];
         if (svgContent) {
           content.innerHTML = svgContent;
+
+          // D2 SVGs have viewBox but no width/height; set them so the SVG has intrinsic size
+          const svg = content.querySelector('svg');
+          if (svg && !svg.getAttribute('width') && svg.getAttribute('viewBox')) {
+            const vb = svg.getAttribute('viewBox').split(/[\s,]+/);
+            if (vb.length === 4) {
+              svg.setAttribute('width', vb[2]);
+              svg.setAttribute('height', vb[3]);
+            }
+          }
 
           // Wire SVG in-page route links and highlight
           const links = content.querySelectorAll('a');
@@ -629,9 +885,14 @@
         if (receives.length > 0) {
           html += `
             <div class="inspector-section">
-              <h3>Receives from</h3>
+              <h3>Called by</h3>
               <ul class="edge-list">
-                ${receives.map(r => `<li><a href="#/${r.id}">${escapeHtml(r.title)}</a>: ${escapeHtml(r.data)}</li>`).join('')}
+                ${receives.map(r => {
+                  const rFiles = (window.VOCKPIT_CODE || {})[r.id] || [];
+                  const rHasCode = rFiles.some(f => f.content !== null);
+                  const codeBtn = rHasCode ? ` <button class="inspector-code-btn" onclick="window._vockpitShowCode('${escapeHtml(r.id)}',0)">code</button>` : '';
+                  return `<li><a href="#/${r.id}">${escapeHtml(r.title)}</a>: ${escapeHtml(r.data)}${codeBtn}</li>`;
+                }).join('')}
               </ul>
             </div>
           `;
@@ -640,15 +901,60 @@
         if (sends.length > 0) {
           html += `
             <div class="inspector-section">
-              <h3>Sends to</h3>
+              <h3>Calls</h3>
               <ul class="edge-list">
-                ${sends.map(s => `<li><a href="#/${s.id}">${escapeHtml(s.title)}</a>: ${escapeHtml(s.data)}</li>`).join('')}
+                ${sends.map(s => {
+                  const sFiles = (window.VOCKPIT_CODE || {})[s.id] || [];
+                  const sHasCode = sFiles.some(f => f.content !== null);
+                  const codeBtn = sHasCode ? ` <button class="inspector-code-btn" onclick="window._vockpitShowCode('${escapeHtml(s.id)}',0)">code</button>` : '';
+                  return `<li><a href="#/${s.id}">${escapeHtml(s.title)}</a>: ${escapeHtml(s.data)}${codeBtn}</li>`;
+                }).join('')}
               </ul>
             </div>
           `;
         }
 
+        // Code section — shown when node has associated source files
+        const nodeCode = node.code || [];
+        const codeFiles = (window.VOCKPIT_CODE || {})[node.id] || [];
+        if (nodeCode.length > 0) {
+          const fileItems = nodeCode.map((p, i) => {
+            const fname = p.split('/').pop();
+            const hasContent = codeFiles[i] && codeFiles[i].content !== null;
+            if (hasContent) {
+              return '<button class="inspector-code-btn" onclick="window._vockpitShowCode(\'' + escapeHtml(node.id) + '\',' + i + ')">' + escapeHtml(fname) + '</button>';
+            }
+            return '<span class="tag" title="' + escapeHtml(p) + '">' + escapeHtml(fname) + '</span>';
+          }).join(' ');
+          html += `
+            <div class="inspector-section">
+              <h3>Code</h3>
+              <div class="tag-list">${fileItems}</div>
+              <p class="code-hint">Ctrl+click any node on the diagram to open its code.</p>
+            </div>
+          `;
+        }
+
+        // Prompt textarea (box nodes only)
+        if (node.kind === 'box') {
+          const savedPrompt = (() => { try { return localStorage.getItem('vockpit_prompt_' + node.id) || ''; } catch { return ''; } })();
+          html += `
+            <div class="inspector-section inspector-prompt-section">
+              <h3>Suggest Changes</h3>
+              <textarea class="prompt-textarea" data-node-id="${escapeHtml(node.id)}" placeholder="Describe what should change in this module...">${escapeHtml(savedPrompt)}</textarea>
+            </div>
+          `;
+        }
+
         inspector.innerHTML = html;
+
+        // Wire prompt auto-save
+        const ta = inspector.querySelector('.prompt-textarea');
+        if (ta) {
+          ta.addEventListener('input', () => {
+            try { localStorage.setItem('vockpit_prompt_' + ta.dataset.nodeId, ta.value); } catch {}
+          });
+        }
       }
 
       function escapeHtml(str) {
@@ -663,7 +969,198 @@
 
       window.addEventListener('hashchange', render);
       render();
+
+      // ── Code modal ──────────────────────────────────────────────────────
+      // All DOM lookups are lazy (inside functions) because the modal HTML
+      // is appended after this script tag and not yet in the DOM here.
+      const codeData = window.VOCKPIT_CODE || {};
+
+      function closeCodeModal() {
+        const m = document.getElementById('code-modal');
+        if (m) m.classList.remove('open');
+      }
+
+      function showCodeModal(nodeId, fileIndex) {
+        const m = document.getElementById('code-modal');
+        const titleEl = document.getElementById('code-modal-title');
+        const tabsEl = document.getElementById('code-modal-tabs');
+        const bodyEl = document.getElementById('code-modal-body');
+        if (!m) return;
+
+        const node = model && model.nodes && model.nodes[nodeId];
+        const files = codeData[nodeId];
+        if (!files || !files.length) return;
+
+        titleEl.textContent = (node ? node.title : nodeId) + ' — source files';
+
+        const startIdx = (typeof fileIndex === 'number' && fileIndex < files.length) ? fileIndex : 0;
+
+        tabsEl.innerHTML = '';
+        files.forEach((f, i) => {
+          const tab = document.createElement('button');
+          tab.className = 'code-tab' + (i === startIdx ? ' active' : '');
+          tab.textContent = f.path.split('/').pop();
+          tab.title = f.path;
+          tab.addEventListener('click', () => {
+            tabsEl.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderCodeFile(f, bodyEl);
+          });
+          tabsEl.appendChild(tab);
+        });
+
+        renderCodeFile(files[startIdx], bodyEl);
+        m.classList.add('open');
+      }
+
+      function renderCodeFile(f, bodyEl) {
+        if (!bodyEl) return;
+        if (f.error || f.content === null) {
+          bodyEl.innerHTML = '<div class="code-error-notice">' + escapeHtml(f.path) + ': ' + escapeHtml(f.error || 'could not read') + '</div>';
+          return;
+        }
+        const lines = f.content.split('\n');
+        const digits = String(lines.length).length;
+        const html = lines.map((line, i) => {
+          const num = String(i + 1).padStart(digits, ' ');
+          return '<span class="code-line-num">' + num + '</span>' + escapeHtml(line);
+        }).join('\n');
+        bodyEl.innerHTML = '<pre>' + html + '</pre>';
+      }
+
+      // Wire up static buttons and backdrop clicks after DOM is ready
+      window.addEventListener('DOMContentLoaded', () => {
+        const m = document.getElementById('code-modal');
+        if (m) {
+          document.getElementById('code-modal-close').addEventListener('click', closeCodeModal);
+          m.addEventListener('click', (e) => { if (e.target === m) closeCodeModal(); });
+        }
+        const cm = document.getElementById('changes-modal');
+        if (cm) {
+          document.getElementById('changes-modal-close').addEventListener('click', closeChangesModal);
+          document.getElementById('copy-changes-btn').addEventListener('click', copyChangesPrompt);
+          cm.addEventListener('click', (e) => { if (e.target === cm) closeChangesModal(); });
+        }
+        const pab = document.getElementById('process-all-btn');
+        if (pab) pab.addEventListener('click', processAllChanges);
+      });
+
+      // Ctrl+click on SVG node → show code (doesn't navigate)
+      content.addEventListener('click', (e) => {
+        if (!e.ctrlKey && !e.metaKey) return;
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href') || '';
+        const nodeId = href.startsWith('#/') ? href.slice(2) : '';
+        if (!nodeId) return;
+        const files = codeData[nodeId];
+        if (files && files.length) {
+          e.preventDefault();
+          showCodeModal(nodeId, 0);
+        }
+      });
+
+      function renderCodeInline(nodeId) {
+        const files = (window.VOCKPIT_CODE || {})[nodeId] || [];
+        if (!files.length) {
+          content.innerHTML = '<div class="missing-notice">No code files linked to this module.</div>';
+          return;
+        }
+        let tabsHtml = '';
+        if (files.length > 1) {
+          tabsHtml = '<div class="code-inline-tabs">' +
+            files.map((f, i) => '<button class="code-tab' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' + escapeHtml(f.path.split('/').pop()) + '</button>').join('') +
+            '</div>';
+        }
+        content.innerHTML = '<div class="code-inline-viewer">' + tabsHtml + '<div class="code-inline-body" id="code-inline-body-el"></div></div>';
+        const bodyEl = document.getElementById('code-inline-body-el');
+        const tabBtns = content.querySelectorAll('.code-inline-tabs .code-tab');
+        function showInlineFile(idx) {
+          tabBtns.forEach(t => t.classList.remove('active'));
+          if (tabBtns[idx]) tabBtns[idx].classList.add('active');
+          renderCodeFile(files[idx], bodyEl);
+        }
+        tabBtns.forEach((btn, i) => btn.addEventListener('click', () => showInlineFile(i)));
+        showInlineFile(0);
+      }
+
+      function processAllChanges() {
+        const nodes = model?.nodes || {};
+        const parts = [];
+        Object.values(nodes).forEach(n => {
+          if (n.kind !== 'box') return;
+          let prompt = '';
+          try { prompt = localStorage.getItem('vockpit_prompt_' + n.id) || ''; } catch {}
+          prompt = prompt.trim();
+          if (!prompt) return;
+          parts.push('## ' + n.title + ' (`' + n.id + '`)\n\n' + prompt);
+        });
+        if (!parts.length) {
+          alert('No change suggestions entered yet.\nClick a module in the diagram, then enter your request in the sidebar.');
+          return;
+        }
+        const sysNode = model.nodes[model.system];
+        const consolidated = '# Change Request for ' + (sysNode ? sysNode.title : 'System') +
+          '\n\nPlease apply the following changes to the codebase:\n\n' +
+          parts.join('\n\n---\n\n') + '\n';
+        const pre = document.getElementById('changes-modal-pre');
+        const m = document.getElementById('changes-modal');
+        if (pre) pre.textContent = consolidated;
+        if (m) m.classList.add('open');
+      }
+
+      function closeChangesModal() {
+        const m = document.getElementById('changes-modal');
+        if (m) m.classList.remove('open');
+      }
+
+      function copyChangesPrompt() {
+        const pre = document.getElementById('changes-modal-pre');
+        const confirmEl = document.getElementById('copy-confirm');
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.textContent).then(() => {
+          if (confirmEl) { confirmEl.hidden = false; setTimeout(() => { confirmEl.hidden = true; }, 2000); }
+        }).catch(() => {
+          const range = document.createRange();
+          range.selectNode(pre);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+        });
+      }
+
+      // Expose showCodeModal for inspector buttons (called from onclick attr with file index)
+      window._vockpitShowCode = showCodeModal;
     })();
   </script>
+
+  <!-- Changes prompt modal -->
+  <div id="changes-modal" role="dialog" aria-modal="true" aria-labelledby="changes-modal-title">
+    <div id="changes-modal-box">
+      <div id="changes-modal-header">
+        <span id="changes-modal-title">Consolidated Change Request</span>
+        <button id="changes-modal-close" aria-label="Close">&#x2715;</button>
+      </div>
+      <div id="changes-modal-actions">
+        <button id="copy-changes-btn">Copy to Clipboard</button>
+        <span id="copy-confirm" hidden>Copied!</span>
+        <span id="changes-modal-hint">Paste into Claude Code terminal to apply changes</span>
+      </div>
+      <div id="changes-modal-body">
+        <pre id="changes-modal-pre"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code modal overlay -->
+  <div id="code-modal" role="dialog" aria-modal="true" aria-labelledby="code-modal-title">
+    <div id="code-modal-box">
+      <div id="code-modal-header">
+        <span id="code-modal-title"></span>
+        <button id="code-modal-close" aria-label="Close">&#x2715;</button>
+      </div>
+      <div id="code-modal-tabs"></div>
+      <div id="code-modal-body"></div>
+    </div>
+  </div>
 </body>
 </html>

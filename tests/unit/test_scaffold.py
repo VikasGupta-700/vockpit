@@ -1,5 +1,4 @@
-from pathlib import Path
-from vockpit import cli, scaffold
+from vockpit import cli
 
 
 def test_init_and_check(tmp_path, capsys):

@@ -1,5 +1,6 @@
 from pathlib import Path
-from vockpit import registry, diagrams, viewerdata
+
+from vockpit import diagrams, registry, viewerdata
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 

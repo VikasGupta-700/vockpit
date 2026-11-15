@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import shutil
 import sys
 import webbrowser
+from pathlib import Path
 
 from vockpit import __version__, checks, d2, diagrams, registry, viewerdata
 from vockpit.findings import format_findings
@@ -40,7 +40,9 @@ def main(argv: list[str] | None = None) -> int:
     p_view = subparsers.add_parser("view", help="View diagrams in a browser")
     p_view.add_argument("id", nargs="?", default=None, help="Item id to focus on")
     p_view.add_argument("--root", default=".", help="Project root folder")
-    p_view.add_argument("--no-open", action="store_true", help="Print address without opening browser")
+    p_view.add_argument(
+        "--no-open", action="store_true", help="Print address without opening browser"
+    )
 
     args = parser.parse_args(argv)
 
@@ -50,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "init":
         from vockpit import scaffold
+
         return scaffold.init_project(Path(args.path))
 
     elif args.command == "generate":

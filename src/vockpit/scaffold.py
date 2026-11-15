@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 from vockpit import d2
 
@@ -36,6 +36,7 @@ def init_project(target: Path) -> int:
 
     if not sys_yaml_existed:
         from vockpit.cli import cmd_generate
+
         d2_bin = d2.find_d2_executable()
         no_svg = False
         if not d2_bin:

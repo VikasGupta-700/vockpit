@@ -28,7 +28,9 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
         if a.id in id_sources:
             findings.append(
                 Finding(
-                    "C02", "ERROR", sys_source,
+                    "C02",
+                    "ERROR",
+                    sys_source,
                     f"duplicate id '{a.id}' (also in {id_sources[a.id]})",
                 )
             )
@@ -42,7 +44,9 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
             if b.id in id_sources:
                 findings.append(
                     Finding(
-                        "C02", "ERROR", sys_source,
+                        "C02",
+                        "ERROR",
+                        sys_source,
                         f"duplicate id '{b.id}' (also in {id_sources[b.id]})",
                     )
                 )
@@ -57,9 +61,9 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
         for bf in box_files:
             rel_source = f"model/boxes/{bf.name}"
             try:
-                with open(bf, "r", encoding="utf-8") as f:
+                with open(bf, encoding="utf-8") as f:
                     b_data = yaml.safe_load(f)
-            except Exception:
+            except (OSError, yaml.YAMLError):
                 continue
 
             if not isinstance(b_data, dict):
@@ -69,7 +73,9 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
             if isinstance(parent_id, str):
                 if parent_id not in l1_ids:
                     findings.append(
-                        Finding("C02", "ERROR", rel_source, f"parent '{parent_id}' is not an L1 box")
+                        Finding(
+                            "C02", "ERROR", rel_source, f"parent '{parent_id}' is not an L1 box"
+                        )
                     )
 
             # L2 boxes
@@ -81,9 +87,11 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
                         if b_id in id_sources:
                             findings.append(
                                 Finding(
-                            "C02", "ERROR", rel_source,
-                            f"duplicate id '{b_id}' (also in {id_sources[b_id]})",
-                        )
+                                    "C02",
+                                    "ERROR",
+                                    rel_source,
+                                    f"duplicate id '{b_id}' (also in {id_sources[b_id]})",
+                                )
                             )
                         else:
                             id_sources[b_id] = rel_source
@@ -127,7 +135,9 @@ def check_c03(model: Model) -> list[Finding]:
                 )
             elif from_id in actor_ids and to_id in actor_ids:
                 findings.append(
-                    Finding("C03", "ERROR", src, f"edge between two actors '{from_id}' and '{to_id}'")
+                    Finding(
+                        "C03", "ERROR", src, f"edge between two actors '{from_id}' and '{to_id}'"
+                    )
                 )
 
     return findings
@@ -226,4 +236,3 @@ def run_model_checks(root: Path | str) -> list[Finding]:
     c10_findings = check_c10(root, model, diag_list)
     c26_findings = check_c26(diag_list)
     return c02_findings + c03_findings + c10_findings + c26_findings
-

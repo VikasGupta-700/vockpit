@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+
 from vockpit import __version__
 from vockpit.diagrams import Diagram
 from vockpit.registry import Model
@@ -66,13 +67,10 @@ def build_model_js(model: Model, diagrams_list: list[Diagram]) -> str:
         }
 
     edges: list[dict[str, str]] = [
-        {"from": e.from_id, "to": e.to_id, "data": e.data}
-        for e in model.edges
+        {"from": e.from_id, "to": e.to_id, "data": e.data} for e in model.edges
     ]
 
-    diagrams_meta: dict[str, dict[str, str]] = {
-        d.name: {"title": d.title} for d in diagrams_list
-    }
+    diagrams_meta: dict[str, dict[str, str]] = {d.name: {"title": d.title} for d in diagrams_list}
 
     data = {
         "version": 1,
@@ -100,8 +98,9 @@ def build_code_js(model: Model, root: Path) -> str:
             try:
                 abs_path.relative_to(root_resolved)
             except ValueError:
-                files.append({"path": rel_path, "content": None,
-                              "error": "path outside project root"})
+                files.append(
+                    {"path": rel_path, "content": None, "error": "path outside project root"}
+                )
                 continue
             if abs_path.is_file():
                 try:
@@ -111,8 +110,13 @@ def build_code_js(model: Model, root: Path) -> str:
                     continue
             else:
                 content = None
-            files.append({"path": rel_path, "content": content,
-                          "error": None if content is not None else "file not found"})
+            files.append(
+                {
+                    "path": rel_path,
+                    "content": content,
+                    "error": None if content is not None else "file not found",
+                }
+            )
         if files:
             code_map[b.id] = files
     json_str = json.dumps(code_map, indent=2, sort_keys=True, ensure_ascii=False)

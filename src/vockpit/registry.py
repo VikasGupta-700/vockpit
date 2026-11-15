@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
-import re
 from typing import Any
+
 import yaml
 
 from vockpit.findings import Finding
@@ -83,13 +84,11 @@ def validate_c01(root: Path) -> list[Finding]:
     rel_sys_file = "model/system.yaml"
 
     if not sys_file.is_file():
-        findings.append(
-            Finding("C01", "ERROR", rel_sys_file, "file does not exist")
-        )
+        findings.append(Finding("C01", "ERROR", rel_sys_file, "file does not exist"))
         return findings
 
     try:
-        with open(sys_file, "r", encoding="utf-8") as f:
+        with open(sys_file, encoding="utf-8") as f:
             sys_data = yaml.safe_load(f)
     except Exception as e:
         findings.append(Finding("C01", "ERROR", rel_sys_file, f"invalid YAML: {e}"))
@@ -113,14 +112,22 @@ def validate_c01(root: Path) -> list[Finding]:
         s_data = sys_data["system"]
         allowed_s_keys = {"id", "title", "summary"}
         for k in sorted(set(s_data.keys()) - allowed_s_keys):
-            findings.append(Finding("C01", "ERROR", rel_sys_file, f"unexpected key in 'system': '{k}'"))
+            findings.append(
+                Finding("C01", "ERROR", rel_sys_file, f"unexpected key in 'system': '{k}'")
+            )
         for req in ["id", "title", "summary"]:
             if req not in s_data:
-                findings.append(Finding("C01", "ERROR", rel_sys_file, f"system missing required key '{req}'"))
+                findings.append(
+                    Finding("C01", "ERROR", rel_sys_file, f"system missing required key '{req}'")
+                )
             elif not isinstance(s_data[req], str):
-                findings.append(Finding("C01", "ERROR", rel_sys_file, f"system '{req}' must be a string"))
+                findings.append(
+                    Finding("C01", "ERROR", rel_sys_file, f"system '{req}' must be a string")
+                )
             elif req == "id" and not ID_PATTERN.match(s_data[req]):
-                findings.append(Finding("C01", "ERROR", rel_sys_file, f"invalid system id '{s_data[req]}'"))
+                findings.append(
+                    Finding("C01", "ERROR", rel_sys_file, f"invalid system id '{s_data[req]}'")
+                )
 
     # actors key (optional list)
     if "actors" in sys_data:
@@ -131,21 +138,44 @@ def validate_c01(root: Path) -> list[Finding]:
             allowed_actor_keys = {"id", "title", "kind", "summary"}
             for idx, actor in enumerate(actors_data):
                 if not isinstance(actor, dict):
-                    findings.append(Finding("C01", "ERROR", rel_sys_file, f"actors[{idx}] must be a mapping"))
+                    findings.append(
+                        Finding("C01", "ERROR", rel_sys_file, f"actors[{idx}] must be a mapping")
+                    )
                     continue
                 for k in sorted(set(actor.keys()) - allowed_actor_keys):
-                    findings.append(Finding("C01", "ERROR", rel_sys_file, f"unexpected key in actor: '{k}'"))
+                    findings.append(
+                        Finding("C01", "ERROR", rel_sys_file, f"unexpected key in actor: '{k}'")
+                    )
                 for req in ["id", "title", "kind"]:
                     if req not in actor:
-                        findings.append(Finding("C01", "ERROR", rel_sys_file, f"actor missing required key '{req}'"))
+                        findings.append(
+                            Finding(
+                                "C01", "ERROR", rel_sys_file, f"actor missing required key '{req}'"
+                            )
+                        )
                     elif not isinstance(actor[req], str):
-                        findings.append(Finding("C01", "ERROR", rel_sys_file, f"actor '{req}' must be a string"))
+                        findings.append(
+                            Finding("C01", "ERROR", rel_sys_file, f"actor '{req}' must be a string")
+                        )
                     elif req == "id" and not ID_PATTERN.match(actor[req]):
-                        findings.append(Finding("C01", "ERROR", rel_sys_file, f"invalid actor id '{actor[req]}'"))
+                        findings.append(
+                            Finding(
+                                "C01", "ERROR", rel_sys_file, f"invalid actor id '{actor[req]}'"
+                            )
+                        )
                     elif req == "kind" and actor[req] not in ("person", "external"):
-                        findings.append(Finding("C01", "ERROR", rel_sys_file, f"actor kind must be 'person' or 'external', got '{actor[req]}'"))
+                        findings.append(
+                            Finding(
+                                "C01",
+                                "ERROR",
+                                rel_sys_file,
+                                f"actor kind must be 'person' or 'external', got '{actor[req]}'",
+                            )
+                        )
                 if "summary" in actor and not isinstance(actor["summary"], str):
-                    findings.append(Finding("C01", "ERROR", rel_sys_file, "actor 'summary' must be a string"))
+                    findings.append(
+                        Finding("C01", "ERROR", rel_sys_file, "actor 'summary' must be a string")
+                    )
 
     # boxes key (required, at least one)
     if "boxes" not in sys_data:
@@ -153,7 +183,9 @@ def validate_c01(root: Path) -> list[Finding]:
     elif not isinstance(sys_data["boxes"], list):
         findings.append(Finding("C01", "ERROR", rel_sys_file, "'boxes' must be a list"))
     elif len(sys_data["boxes"]) == 0:
-        findings.append(Finding("C01", "ERROR", rel_sys_file, "'boxes' list must have at least one entry"))
+        findings.append(
+            Finding("C01", "ERROR", rel_sys_file, "'boxes' list must have at least one entry")
+        )
     else:
         _validate_boxes(sys_data["boxes"], rel_sys_file, findings)
 
@@ -172,7 +204,7 @@ def validate_c01(root: Path) -> list[Finding]:
         for bf in box_files:
             rel_bf = f"model/boxes/{bf.name}"
             try:
-                with open(bf, "r", encoding="utf-8") as f:
+                with open(bf, encoding="utf-8") as f:
                     b_data = yaml.safe_load(f)
             except Exception as e:
                 findings.append(Finding("C01", "ERROR", rel_bf, f"invalid YAML: {e}"))
@@ -192,14 +224,23 @@ def validate_c01(root: Path) -> list[Finding]:
             elif not isinstance(b_data["parent"], str):
                 findings.append(Finding("C01", "ERROR", rel_bf, "'parent' must be a string"))
             elif b_data["parent"] != expected_parent:
-                findings.append(Finding("C01", "ERROR", rel_bf, f"parent '{b_data['parent']}' differs from file name '{expected_parent}'"))
+                findings.append(
+                    Finding(
+                        "C01",
+                        "ERROR",
+                        rel_bf,
+                        f"parent '{b_data['parent']}' differs from file name '{expected_parent}'",
+                    )
+                )
 
             if "boxes" not in b_data:
                 findings.append(Finding("C01", "ERROR", rel_bf, "missing required key 'boxes'"))
             elif not isinstance(b_data["boxes"], list):
                 findings.append(Finding("C01", "ERROR", rel_bf, "'boxes' must be a list"))
             elif len(b_data["boxes"]) == 0:
-                findings.append(Finding("C01", "ERROR", rel_bf, "'boxes' list must have at least one entry"))
+                findings.append(
+                    Finding("C01", "ERROR", rel_bf, "'boxes' list must have at least one entry")
+                )
             else:
                 _validate_boxes(b_data["boxes"], rel_bf, findings)
 
@@ -232,7 +273,9 @@ def _validate_boxes(boxes: list[Any], loc: str, findings: list[Finding]) -> None
             if list_key in b:
                 val = b[list_key]
                 if not isinstance(val, list) or not all(isinstance(x, str) for x in val):
-                    findings.append(Finding("C01", "ERROR", loc, f"box '{list_key}' must be a list of strings"))
+                    findings.append(
+                        Finding("C01", "ERROR", loc, f"box '{list_key}' must be a list of strings")
+                    )
 
 
 def _validate_edges(edges: list[Any], loc: str, findings: list[Finding]) -> None:
@@ -247,7 +290,9 @@ def _validate_edges(edges: list[Any], loc: str, findings: list[Finding]) -> None
             if req not in e:
                 findings.append(Finding("C01", "ERROR", loc, f"edge missing required key '{req}'"))
             elif not isinstance(e[req], str) or not e[req].strip():
-                findings.append(Finding("C01", "ERROR", loc, f"edge '{req}' must be a non-empty string"))
+                findings.append(
+                    Finding("C01", "ERROR", loc, f"edge '{req}' must be a non-empty string")
+                )
 
 
 def load(root: Path | str) -> tuple[Model | None, list[Finding]]:
@@ -257,7 +302,7 @@ def load(root: Path | str) -> tuple[Model | None, list[Finding]]:
         return None, c01_findings
 
     sys_file = root / "model" / "system.yaml"
-    with open(sys_file, "r", encoding="utf-8") as f:
+    with open(sys_file, encoding="utf-8") as f:
         sys_data = yaml.safe_load(f)
 
     sys_obj = System(
@@ -313,7 +358,7 @@ def load(root: Path | str) -> tuple[Model | None, list[Finding]]:
         box_files = sorted(boxes_dir.glob("*.yaml"), key=lambda p: p.name)
         for bf in box_files:
             rel_path = f"model/boxes/{bf.name}"
-            with open(bf, "r", encoding="utf-8") as f:
+            with open(bf, encoding="utf-8") as f:
                 b_data = yaml.safe_load(f)
             parent_id = b_data.get("parent")
             for b in b_data.get("boxes", []):

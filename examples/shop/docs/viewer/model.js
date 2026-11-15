@@ -94,6 +94,7 @@ window.VOCKPIT_MODEL = {
   "nodes": {
     "cart-store": {
       "children": [],
+      "code": [],
       "diagram": "L2_storefront",
       "id": "cart-store",
       "inputs": [],
@@ -106,6 +107,7 @@ window.VOCKPIT_MODEL = {
     },
     "cart-view": {
       "children": [],
+      "code": [],
       "diagram": "L2_storefront",
       "id": "cart-view",
       "inputs": [],
@@ -118,6 +120,7 @@ window.VOCKPIT_MODEL = {
     },
     "catalog-view": {
       "children": [],
+      "code": [],
       "diagram": "L2_storefront",
       "id": "catalog-view",
       "inputs": [],
@@ -130,6 +133,7 @@ window.VOCKPIT_MODEL = {
     },
     "create-order": {
       "children": [],
+      "code": [],
       "diagram": "L2_orders",
       "id": "create-order",
       "inputs": [],
@@ -154,6 +158,7 @@ window.VOCKPIT_MODEL = {
     },
     "notifications": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "notifications",
       "inputs": [
@@ -168,6 +173,7 @@ window.VOCKPIT_MODEL = {
     },
     "order-controller": {
       "children": [],
+      "code": [],
       "diagram": "L2_orders",
       "id": "order-controller",
       "inputs": [],
@@ -180,6 +186,7 @@ window.VOCKPIT_MODEL = {
     },
     "order-repository": {
       "children": [],
+      "code": [],
       "diagram": "L2_orders",
       "id": "order-repository",
       "inputs": [],
@@ -192,6 +199,7 @@ window.VOCKPIT_MODEL = {
     },
     "order-status": {
       "children": [],
+      "code": [],
       "diagram": "L2_orders",
       "id": "order-status",
       "inputs": [],
@@ -209,6 +217,7 @@ window.VOCKPIT_MODEL = {
         "order-repository",
         "order-status"
       ],
+      "code": [],
       "diagram": "L2_orders",
       "id": "orders",
       "inputs": [
@@ -237,6 +246,7 @@ window.VOCKPIT_MODEL = {
     },
     "payments": {
       "children": [],
+      "code": [],
       "diagram": "L1_system",
       "id": "payments",
       "inputs": [
@@ -274,6 +284,7 @@ window.VOCKPIT_MODEL = {
         "cart-view",
         "cart-store"
       ],
+      "code": [],
       "diagram": "L2_storefront",
       "id": "storefront",
       "inputs": [],

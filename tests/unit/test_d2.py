@@ -1,7 +1,7 @@
-from pathlib import Path
 import pytest
-from vockpit.diagrams import Diagram, DiagramNode, DiagramEdge
+
 from vockpit import d2
+from vockpit.diagrams import Diagram, DiagramEdge, DiagramNode
 
 
 def test_d2_render_deterministic():
@@ -38,11 +38,11 @@ def test_d2_render_deterministic():
     assert out1 == out2
     assert "classes: {" in out1
     assert 'n_create_order: "Create order" {' in out1
-    assert '  class: inner' in out1
+    assert "  class: inner" in out1
     assert '  link: "#/create-order"' in out1
     assert '  tooltip: "Validates a cart and stores the order."' in out1
     assert 'n_customer: "Customer" {' in out1
-    assert '  shape: person' in out1
+    assert "  shape: person" in out1
     assert 'n_order_controller -> n_create_order: "OrderRequest"' in out1
 
 

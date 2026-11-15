@@ -1,5 +1,6 @@
 from pathlib import Path
-from vockpit import registry, diagrams
+
+from vockpit import diagrams, registry
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 
@@ -15,7 +16,8 @@ def test_build_diagrams_shop():
     # Diagrams: L0_context, L1_system, L2_storefront, L2_orders.
     assert list(diag_map.keys()) == ["L0_context", "L1_system", "L2_storefront", "L2_orders"]
 
-    # L0_context has 4 nodes and 4 edges: customer -> shop, shop -> customer, shop -> payment-provider, shop -> warehouse.
+    # L0_context has 4 nodes and 4 edges: customer -> shop, shop -> customer,
+    # shop -> payment-provider, shop -> warehouse.
     l0 = diag_map["L0_context"]
     assert l0.title == "L0: Online Shop"
     assert len(l0.nodes) == 4
@@ -39,7 +41,8 @@ def test_build_diagrams_shop():
     assert len(actor_l1) == 3
     assert [n.id for n in actor_l1] == ["customer", "payment-provider", "warehouse"]
 
-    # L2_storefront has 3 inner nodes and the neighbour orders, reached by the edge cart-view -> orders.
+    # L2_storefront has 3 inner nodes and the neighbour orders,
+    # reached by the edge cart-view -> orders.
     l2_sf = diag_map["L2_storefront"]
     assert l2_sf.title == "L2: Storefront"
     inner_sf = [n for n in l2_sf.nodes if n.role == "inner"]
@@ -59,7 +62,12 @@ def test_build_diagrams_shop():
     inner_ord = [n for n in l2_ord.nodes if n.role == "inner"]
     neigh_ord = [n for n in l2_ord.nodes if n.role == "neighbour"]
     assert len(inner_ord) == 4
-    assert [n.id for n in inner_ord] == ["order-controller", "create-order", "order-repository", "order-status"]
+    assert [n.id for n in inner_ord] == [
+        "order-controller",
+        "create-order",
+        "order-repository",
+        "order-status",
+    ]
     assert len(neigh_ord) == 1
     assert neigh_ord[0].id == "storefront"
     ord_edge_pairs = [(e.from_id, e.to_id, e.label) for e in l2_ord.edges]

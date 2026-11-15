@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from vockpit import registry
 
 
@@ -37,7 +38,12 @@ def test_load_good_fixture():
     orders = next(b for b in model.boxes if b.id == "orders")
     assert orders.level == 1
     assert orders.parent == "shop"
-    assert orders.children == ["order-controller", "create-order", "order-repository", "order-status"]
+    assert orders.children == [
+        "order-controller",
+        "create-order",
+        "order-repository",
+        "order-status",
+    ]
 
     payments = next(b for b in model.boxes if b.id == "payments")
     assert payments.level == 1

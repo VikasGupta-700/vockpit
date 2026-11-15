@@ -8,7 +8,10 @@ def test_finding_formatting():
         location="model/boxes/orders.yaml",
         message="duplicate id 'create-order' (also in model/system.yaml)",
     )
-    assert str(f) == "C02 ERROR model/boxes/orders.yaml: duplicate id 'create-order' (also in model/system.yaml)"
+    expected = (
+        "C02 ERROR model/boxes/orders.yaml: duplicate id 'create-order' (also in model/system.yaml)"
+    )
+    assert str(f) == expected
 
 
 def test_findings_sorting():

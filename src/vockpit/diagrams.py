@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Any
 
-from vockpit.registry import Model, Box, Actor, System
+from vockpit.registry import Actor, Box, Model, System
 
 
 @dataclass
@@ -37,7 +37,7 @@ def _merge_edges(raw_edges: list[tuple[str, str, str]]) -> list[DiagramEdge]:
         grouped[(f, t)].add(data)
 
     merged: list[DiagramEdge] = []
-    for (f, t) in sorted(grouped.keys()):
+    for f, t in sorted(grouped.keys()):
         distinct_data = sorted(grouped[(f, t)])
         label = "; ".join(distinct_data)
         merged.append(DiagramEdge(from_id=f, to_id=t, label=label))

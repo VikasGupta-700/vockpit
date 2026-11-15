@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
 import shutil
 import subprocess
 import sys
-from vockpit.diagrams import Diagram, DiagramNode
+from pathlib import Path
+
+from vockpit.diagrams import Diagram
 
 
 def escape_d2(s: str) -> str:
@@ -28,7 +29,7 @@ def render(diagram: Diagram) -> str:
         "  system:    { style: { stroke-width: 3; border-radius: 6 } }",
         "  inner:     { style: { border-radius: 6 } }",
         "  external:  { style: { stroke-dash: 4; border-radius: 6 } }",
-        "  neighbour: { style: { stroke-dash: 4; border-radius: 6; fill: \"#eeeeee\" } }",
+        '  neighbour: { style: { stroke-dash: 4; border-radius: 6; fill: "#eeeeee" } }',
         "}",
         "",
     ]
@@ -80,9 +81,12 @@ def find_d2_executable() -> str | None:
 def to_svg(d2_path: Path | str, svg_path: Path | str, d2_bin: str | None = None) -> None:
     bin_path = d2_bin or find_d2_executable()
     if not bin_path:
-        raise FileNotFoundError("d2 not found on PATH. Install from https://d2lang.com or use --no-svg.")
+        raise FileNotFoundError(
+            "d2 not found on PATH. Install from https://d2lang.com or use --no-svg."
+        )
 
-    subprocess.run(
+    # Fixed argv, no shell; bin_path is the resolved d2 executable.
+    subprocess.run(  # noqa: S603
         [bin_path, str(d2_path), str(svg_path)],
         check=True,
         capture_output=True,

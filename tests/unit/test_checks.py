@@ -1,5 +1,6 @@
 from pathlib import Path
-from vockpit import checks, registry
+
+from vockpit import checks
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 
@@ -64,7 +65,8 @@ boxes:
 
 
 def test_c03_edge_system_id_or_self():
-    from vockpit.registry import System, Actor, Box, Edge, Model
+    from vockpit.registry import Actor, Box, Edge, Model, System
+
     sys = System("shop", "Shop", "Desc")
     actor = Actor("customer", "Customer", "person")
     box = Box("orders", "Orders", "Desc", level=1, parent="shop")
@@ -75,4 +77,3 @@ def test_c03_edge_system_id_or_self():
     findings = checks.check_c03(model)
     assert any(f.rule == "C03" and "uses system id" in f.message for f in findings)
     assert any(f.rule == "C03" and "self-referencing" in f.message for f in findings)
-
