@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Sequence
+
 import yaml
 
-from vockpit.findings import Finding
-from vockpit import registry, diagrams, d2, viewerdata
-from vockpit.registry import Model
+from vockpit import d2, diagrams, registry, viewerdata
 from vockpit.diagrams import Diagram
+from vockpit.findings import Finding
+from vockpit.registry import Model
 
 
 def check_c01(root: Path | str) -> list[Finding]:
@@ -27,7 +27,10 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
     for a in model.actors:
         if a.id in id_sources:
             findings.append(
-                Finding("C02", "ERROR", sys_source, f"duplicate id '{a.id}' (also in {id_sources[a.id]})")
+                Finding(
+                    "C02", "ERROR", sys_source,
+                    f"duplicate id '{a.id}' (also in {id_sources[a.id]})",
+                )
             )
         else:
             id_sources[a.id] = sys_source
@@ -38,7 +41,10 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
         if b.level == 1:
             if b.id in id_sources:
                 findings.append(
-                    Finding("C02", "ERROR", sys_source, f"duplicate id '{b.id}' (also in {id_sources[b.id]})")
+                    Finding(
+                        "C02", "ERROR", sys_source,
+                        f"duplicate id '{b.id}' (also in {id_sources[b.id]})",
+                    )
                 )
             else:
                 id_sources[b.id] = sys_source
@@ -74,7 +80,10 @@ def check_c02(root: Path | str, model: Model) -> list[Finding]:
                         b_id = b["id"]
                         if b_id in id_sources:
                             findings.append(
-                                Finding("C02", "ERROR", rel_source, f"duplicate id '{b_id}' (also in {id_sources[b_id]})")
+                                Finding(
+                            "C02", "ERROR", rel_source,
+                            f"duplicate id '{b_id}' (also in {id_sources[b_id]})",
+                        )
                             )
                         else:
                             id_sources[b_id] = rel_source
@@ -113,9 +122,13 @@ def check_c03(model: Model) -> list[Finding]:
 
         if from_valid and to_valid:
             if from_id == to_id:
-                findings.append(Finding("C03", "ERROR", src, f"self-referencing edge '{from_id}' -> '{to_id}'"))
+                findings.append(
+                    Finding("C03", "ERROR", src, f"self-referencing edge '{from_id}' -> '{to_id}'")
+                )
             elif from_id in actor_ids and to_id in actor_ids:
-                findings.append(Finding("C03", "ERROR", src, f"edge between two actors '{from_id}' and '{to_id}'"))
+                findings.append(
+                    Finding("C03", "ERROR", src, f"edge between two actors '{from_id}' and '{to_id}'")
+                )
 
     return findings
 
@@ -132,7 +145,9 @@ def check_c10(root: Path | str, model: Model, diag_list: list[Diagram]) -> list[
     if diagrams_dir.is_dir():
         for f in sorted(diagrams_dir.glob("*.d2"), key=lambda p: p.name):
             if f.name not in expected_d2_names:
-                findings.append(Finding("C10", "ERROR", f"docs/diagrams/{f.name}", "unexpected diagram file"))
+                findings.append(
+                    Finding("C10", "ERROR", f"docs/diagrams/{f.name}", "unexpected diagram file")
+                )
 
     # Check each expected .d2 file and its corresponding .svg
     for d in diag_list:

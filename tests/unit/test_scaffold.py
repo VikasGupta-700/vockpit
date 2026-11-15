@@ -20,11 +20,12 @@ def test_init_and_check(tmp_path, capsys):
     assert (target / ".agent" / "skills" / "pack-draft" / "SKILL.md").is_file()
     assert (target / "docs" / "viewer" / "index.html").is_file()
 
-    # Check must exit 0 and print OK
+    # Check must exit 0 and print OK (may have C10 WARN if d2/SVGs absent in CI)
     ret = cli.main(["check", "--root", str(target)])
     assert ret == 0
     out, _ = capsys.readouterr()
-    assert out.strip().endswith("OK")
+    assert "OK" in out
+    assert "FAILED" not in out
 
     # Second init in the same folder: skips every file, does not run generate
     ret = cli.main(["init", str(target)])
