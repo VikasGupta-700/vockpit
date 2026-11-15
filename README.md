@@ -1,5 +1,7 @@
 # Vockpit
 
+[![CI](https://github.com/VikasGupta-700/vockpit/actions/workflows/ci.yml/badge.svg)](https://github.com/VikasGupta-700/vockpit/actions/workflows/ci.yml)
+
 *You steer. AI builds.*
 
 Vockpit, the Vibe Coding Cockpit, lets you steer an AI-built system from its diagrams instead of its details. Instead of writing complex diagrams by hand or getting lost in source code, you define high-level components ("boxes") and connections ("edges") across three levels in simple YAML files. Vockpit validates the model, generates crisp D2 diagrams, and compiles an interactive single-page viewer where clicking any box zooms into its internals.
